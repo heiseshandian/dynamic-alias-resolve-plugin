@@ -1,0 +1,21 @@
+{
+  "name": "dynamic-alias-resolve-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heiseshandian/dynamic-alias-resolve-plugin.git"
+  },
+  "keywords": [
+    "enhanced-resolve",
+    "plugins",
+    "dynamic alias resolve plugin"
+  ],
+  "author": "gqzhang5 <gqzhang5@iflytek.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heiseshandian/dynamic-alias-resolve-plugin/issues"
+  },
+  "homepage": "https://github.com/heiseshandian/dynamic-alias-resolve-plugin#readme"
+}

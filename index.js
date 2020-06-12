@@ -1,0 +1,100 @@
+const fs = require("fs");
+
+module.exports = class DynamicAliasResolvePlugin {
+  /**
+   *
+   * @typedef {Object} DescriptionFileData
+   * @property {any} concord
+   * @property {{key:string}:boolean} browser
+   */
+  /**
+   *
+   * @typedef {Object} ResolverRequest
+   * @property {any} context
+   * @property {DescriptionFileData} [descriptionFileData]
+   * @property {string} [descriptionFilePath]
+   * @property {string} [descriptionFileRoot]
+   * @property {boolean} [directory]
+   * @property {boolean} [module]
+   * @property {string} [path]
+   * @property {string} [query]
+   * @property {string} [relativePath]
+   * @property {string} request
+   */
+  /**
+   *
+   * @param {object} param0
+   * @param {Array<string>} param0.alias 指定哪些alias需要动态替换为新地址
+   * @param {(request:ResolverRequest)=>string | undefined | null | boolean} param0.dynamic 替换路径函数
+   * @param {RegExp} param0.pattern 指定哪些文件需要经过本插件处理
+   */
+  constructor({ alias = ["@"], dynamic = () => null, pattern = /.*/ } = {}) {
+    if (typeof alias === "string") {
+      alias = [alias];
+    }
+
+    this.options = {
+      alias,
+      dynamic,
+      pattern,
+    };
+  }
+
+  apply(resolver) {
+    const { alias, dynamic, pattern } = this.options;
+
+    // 未传入alias不需要注册本插件
+    if (alias.length === 0) {
+      return;
+    }
+
+    resolver
+      .getHook("described-resolve")
+      .tapAsync("DynamicAliasResolvePlugin", (request, resolveContext, callback) => {
+        /**
+         * @type {string}
+         */
+        const innerRequest = request.request || request.path;
+        // 不需要处理的文件直接返回，将控制权交给下一个resolve插件
+        if (!innerRequest || !pattern.test(innerRequest)) {
+          return callback();
+        }
+
+        // 不需要动态替换alias的请求直接返回
+        const dynamicPath = dynamic(request);
+        if (!dynamicPath) {
+          return callback();
+        }
+
+        for (const name of alias) {
+          if (innerRequest.startsWith(name)) {
+            const newRequestStr = dynamicPath.replace(/\/$/, "") + innerRequest.substr(name.length);
+
+            // 替换路径不存在直接返回
+            if (!fs.existsSync(newRequestStr)) {
+              continue;
+            }
+
+            // 使用替换路径发起新的resolve流程
+            const obj = Object.assign({}, request, {
+              request: newRequestStr,
+            });
+            return resolver.doResolve(
+              "resolve",
+              obj,
+              `DynamicAliasResolvePlugin ${newRequestStr}`,
+              resolveContext,
+              (err, result) => {
+                if (err) return callback(err);
+                // Don't allow other aliasing or raw request
+                if (result === undefined) return callback(null, null);
+                return callback(null, result);
+              }
+            );
+          }
+        }
+
+        return callback();
+      });
+  }
+};
