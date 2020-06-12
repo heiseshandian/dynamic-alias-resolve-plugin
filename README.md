@@ -6,6 +6,8 @@
 
 Thanks for the help of [enhanced-resolve](https://github.com/webpack/enhanced-resolve), we can define alias for path, but it's static, in some cases we may want alias point to A path or B path, in other words, we want dynamic alias. [enhanced-resolve](https://github.com/webpack/enhanced-resolve) is based on [tapable](https://github.com/webpack/tapable), so we can write a plugin to make it.
 
+Read this in other languages: [english](./README.md), [简体中文](./README.zh-cn.md)
+
 ## Prerequisites
 
 This module requires webpack v4 and above.
