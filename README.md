@@ -37,7 +37,8 @@ resolve: {
       alias: "@",
       // pathA or pathB should be replaced with real path
       // "request" is raw request object from enhanced-resolve
-      dynamic: (request) => "pathA or PathB",
+      // "alias" is matched alias of current request (eg. "@" in "@/login.less")
+      dynamic: (request, alias) => "pathA or PathB",
       // we just want less file to be handled by this plugin
       pattern: /\.less$/,
     }),
@@ -47,8 +48,8 @@ resolve: {
 
 ## Options
 
-| properties |                                       description                                        |   type   | default  |
-| :--------: | :--------------------------------------------------------------------------------------: | :------: | :------: |
-|   alias    |                            alias you want to make it dynamic                             |  string  |   '@'    |
-|  dynamic   | return value should be ==absolute path==, all false value('',false,null) will be ignored | function | ()=>null |
-|  pattern   |                            files needs handled by this plugin                            |  RegExp  |  /.\*/   |
+| properties |                                                                                         description                                                                                         |              type               | default  |
+| :--------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------: | :------: |
+|   alias    |                                                                              alias you want to make it dynamic                                                                              |             string              |   '@'    |
+|  dynamic   | return value should be `absolute path`, all false value('',false,null) will be ignored. `request` is raw enhanced-resolve request object, `alias` is current alias you want make it dynamic | function(request,alias)=>string | ()=>null |
+|  pattern   |                                                                             files needs handled by this plugin                                                                              |             RegExp              |  /.\*/   |

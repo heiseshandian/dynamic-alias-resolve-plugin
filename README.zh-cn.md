@@ -36,7 +36,9 @@ resolve: {
       // 需要动态解析的alias数组,提供字符串的话会在内部被转成数组
       alias: ["@"],
       // pathA or pathB 需要被替换为实际路径（仅支持绝对路径，插件内部依赖于绝对路径判断替换后的路径是否存在）
-      dynamic: (request) => "pathA or PathB",
+      // 这里的request是enhanced-resolve的原生request对象
+      // 这里的alias是当前request匹配到的alias （例如："@/login.less" 中的 "@" ）
+      dynamic: (request, alias) => "pathA or PathB",
       // 指定哪些文件需要经过本插件处理
       pattern: /\.less$/,
     }),
@@ -46,8 +48,8 @@ resolve: {
 
 ## Options
 
-| properties |                                description                                |         type          | default  |
-| :--------: | :-----------------------------------------------------------------------: | :-------------------: | :------: |
-|   alias    |                         需要动态解析的 alias 数组                         | string, Array<string> |   '@'    |
-|  dynamic   | 返回值是一个路径字符串（绝对路径），所有的假值都会被忽略（false,'',null） |       function        | ()=>null |
-|  pattern   |                      指定哪些文件需要经过本插件处理                       |        RegExp         |  /.\*/   |
+| properties |                                                                                                   description                                                                                                    |              type               | default  |
+| :--------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------: | :------: |
+|   alias    |                                                                                            需要动态解析的 alias 数组                                                                                             |      string, Array<string>      |   '@'    |
+|  dynamic   | 返回值是一个路径字符串（绝对路径），所有的假值都会被忽略（false,'',null）。这里的 request 是 enhanced-resolve 的原生 request 对象，这里的 alias 是当前 request 匹配到的 alias （例如："@/login.less" 中的 "@" ） | function(request,alias)=>string | ()=>null |
+|  pattern   |                                                                                          指定哪些文件需要经过本插件处理                                                                                          |             RegExp              |  /.\*/   |

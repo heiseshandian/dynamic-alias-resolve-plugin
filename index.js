@@ -25,7 +25,7 @@ module.exports = class DynamicAliasResolvePlugin {
    *
    * @param {object} param0
    * @param {Array<string>} param0.alias 指定哪些alias需要动态替换为新地址
-   * @param {(request:ResolverRequest)=>string | undefined | null | boolean} param0.dynamic 替换路径函数
+   * @param {(request:ResolverRequest,alias:string)=>string | undefined | null | boolean} param0.dynamic 替换路径函数
    * @param {RegExp} param0.pattern 指定哪些文件需要经过本插件处理
    */
   constructor({ alias = ["@"], dynamic = () => null, pattern = /.*/ } = {}) {
@@ -60,14 +60,14 @@ module.exports = class DynamicAliasResolvePlugin {
           return callback();
         }
 
-        // 不需要动态替换alias的请求直接返回
-        const dynamicPath = dynamic(request);
-        if (!dynamicPath) {
-          return callback();
-        }
-
         for (const name of alias) {
           if (innerRequest.startsWith(name)) {
+            // 不需要动态替换alias的请求直接进入下一次循环
+            const dynamicPath = dynamic(request, name);
+            if (!dynamicPath) {
+              continue;
+            }
+
             const newRequestStr = dynamicPath.replace(/\/$/, "") + innerRequest.substr(name.length);
 
             // 替换路径不存在直接返回
