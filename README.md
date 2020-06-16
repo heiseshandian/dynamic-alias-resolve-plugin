@@ -48,11 +48,11 @@ resolve: {
 
 ## Options
 
-| properties |              type               | default  |
-| :--------: | :-----------------------------: | :------: |
-|   alias    |             string              |  ['@']   |
-|  dynamic   | function(request,alias)=>string | ()=>null |
-|  pattern   |             RegExp              |  /.\*/   |
+| properties |                          type                           | default  |
+| :--------: | :-----------------------------------------------------: | :------: |
+|   alias    |                         string                          |  ['@']   |
+|  dynamic   | function(request,alias)=>string\|null\|false\|undefined | ()=>null |
+|  pattern   |                         RegExp                          |  /.\*/   |
 
 ## Description Of Options
 
