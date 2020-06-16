@@ -37,7 +37,7 @@ resolve: {
       alias: "@",
       // pathA or pathB should be replaced with real path
       // "request" is raw request object from enhanced-resolve
-      // "alias" is matched alias of current request (eg. "@" in "@/login.less")
+      // "alias" is matched alias of current request.(eg. "@" in "@/login.less")
       dynamic: (request, alias) => "pathA or PathB",
       // we just want less file to be handled by this plugin
       pattern: /\.less$/,
@@ -48,8 +48,22 @@ resolve: {
 
 ## Options
 
-| properties |                                                                                         description                                                                                         |              type               | default  |
-| :--------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------: | :------: |
-|   alias    |                                                                              alias you want to make it dynamic                                                                              |             string              |   '@'    |
-|  dynamic   | return value should be `absolute path`, all false value('',false,null) will be ignored. `request` is raw enhanced-resolve request object, `alias` is current alias you want make it dynamic | function(request,alias)=>string | ()=>null |
-|  pattern   |                                                                             files needs handled by this plugin                                                                              |             RegExp              |  /.\*/   |
+| properties |              type               | default  |
+| :--------: | :-----------------------------: | :------: |
+|   alias    |             string              |  ['@']   |
+|  dynamic   | function(request,alias)=>string | ()=>null |
+|  pattern   |             RegExp              |  /.\*/   |
+
+## Description Of Options
+
+### alias
+
+alias you want to make it dynamic
+
+### dynamic
+
+return value should be `absolute path`,all false value('',false,null) will be ignored. `request` is raw enhanced-resolve request object, `alias` is current alias you want make it dynamic. (eg. "@" in "@/login.less")
+
+### pattern
+
+files needs handled by this plugin

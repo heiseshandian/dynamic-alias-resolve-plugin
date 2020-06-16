@@ -48,8 +48,22 @@ resolve: {
 
 ## Options
 
-| properties |                                                                                                   description                                                                                                    |              type               | default  |
-| :--------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------: | :------: |
-|   alias    |                                                                                            需要动态解析的 alias 数组                                                                                             |      string, Array<string>      |   '@'    |
-|  dynamic   | 返回值是一个路径字符串（绝对路径），所有的假值都会被忽略（false,'',null）。这里的 request 是 enhanced-resolve 的原生 request 对象，这里的 alias 是当前 request 匹配到的 alias （例如："@/login.less" 中的 "@" ） | function(request,alias)=>string | ()=>null |
-|  pattern   |                                                                                          指定哪些文件需要经过本插件处理                                                                                          |             RegExp              |  /.\*/   |
+| properties |              type               | default  |
+| :--------: | :-----------------------------: | :------: |
+|   alias    |      string, Array<string>      |  ['@']   |
+|  dynamic   | function(request,alias)=>string | ()=>null |
+|  pattern   |             RegExp              |  /.\*/   |
+
+## Options 说明
+
+### alias
+
+需要动态解析的 alias 数组
+
+### dynamic
+
+返回值是一个路径字符串（绝对路径），所有的假值都会被忽略（false,'',null）。这里的 request 是 enhanced-resolve 的原生 request 对象，这里的 alias 是当前 request 匹配到的 alias （例如："@/login.less" 中的 "@" ）
+
+### pattern
+
+指定哪些文件需要经过本插件处理
