@@ -69,21 +69,21 @@ module.exports = class DynamicAliasResolvePlugin {
               continue;
             }
 
-            const newRequestStr = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
+            const newRequestPath = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
 
             // 替换路径不存在直接进入下一次循环
-            if (!fs.existsSync(newRequestStr)) {
+            if (!fs.existsSync(newRequestPath)) {
               continue;
             }
 
             // 使用替换路径发起新的resolve流程
             const obj = Object.assign({}, request, {
-              request: newRequestStr,
+              request: newRequestPath,
             });
             return resolver.doResolve(
               "resolve",
               obj,
-              `DynamicAliasResolvePlugin ${newRequestStr}`,
+              `DynamicAliasResolvePlugin ${newRequestPath}`,
               resolveContext,
               (err, result) => {
                 if (err) return callback(err);
