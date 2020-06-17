@@ -69,9 +69,9 @@ module.exports = class DynamicAliasResolvePlugin {
               continue;
             }
 
-            const newRequestStr = path.resolve(dynamicPath, innerRequest.substr(name.length));
+            const newRequestStr = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
 
-            // 替换路径不存在直接返回
+            // 替换路径不存在直接进入下一次循环
             if (!fs.existsSync(newRequestStr)) {
               continue;
             }
