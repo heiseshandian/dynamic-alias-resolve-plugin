@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 module.exports = class DynamicAliasResolvePlugin {
   /**
@@ -68,7 +69,7 @@ module.exports = class DynamicAliasResolvePlugin {
               continue;
             }
 
-            const newRequestStr = dynamicPath.replace(/\/$/, "") + innerRequest.substr(name.length);
+            const newRequestStr = path.resolve(dynamicPath, innerRequest.substr(name.length));
 
             // 替换路径不存在直接返回
             if (!fs.existsSync(newRequestStr)) {
