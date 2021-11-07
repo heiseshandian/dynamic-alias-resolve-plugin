@@ -25,9 +25,9 @@ module.exports = class DynamicAliasResolvePlugin {
   /**
    *
    * @param {object} param0
-   * @param {Array<string>} param0.alias 指定哪些alias需要动态替换为新地址
-   * @param {(request:ResolverRequest,alias:string)=>string | undefined | null | boolean} param0.dynamic 替换路径函数
-   * @param {RegExp} param0.pattern 指定哪些文件需要经过本插件处理
+   * @param {Array<string>} param0.alias alias that should be replaced by new path
+   * @param {(request:ResolverRequest,alias:string)=>string | undefined | null | boolean} param0.dynamic a function whose result is an absolute path that alias points to
+   * @param {RegExp} param0.pattern specify which files should be handled by this plugin
    */
   constructor({ alias = ["@"], dynamic = () => null, pattern = /.*/ } = {}) {
     if (typeof alias === "string") {
@@ -44,7 +44,6 @@ module.exports = class DynamicAliasResolvePlugin {
   apply(resolver) {
     const { alias, dynamic, pattern } = this.options;
 
-    // 未传入alias不需要注册本插件
     if (alias.length === 0) {
       return;
     }
@@ -56,14 +55,13 @@ module.exports = class DynamicAliasResolvePlugin {
          * @type {string}
          */
         const innerRequest = request.request || request.path;
-        // 不需要处理的文件直接返回，将控制权交给下一个resolve插件
+        // For files that shouldn't be handled by this plugin
         if (!innerRequest || !pattern.test(innerRequest)) {
           return callback();
         }
 
         for (const name of alias) {
           if (innerRequest.startsWith(name)) {
-            // 不需要动态替换alias的请求直接进入下一次循环
             const dynamicPath = dynamic(request, name);
             if (!dynamicPath) {
               continue;
@@ -71,12 +69,10 @@ module.exports = class DynamicAliasResolvePlugin {
 
             const newRequestPath = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
 
-            // 替换路径不存在直接进入下一次循环
             if (!fs.existsSync(newRequestPath)) {
               continue;
             }
 
-            // 使用替换路径发起新的resolve流程
             const obj = Object.assign({}, request, {
               request: newRequestPath,
             });
