@@ -28,21 +28,30 @@ module.exports = class DynamicAliasResolvePlugin {
    * @param {Array<string>} param0.alias alias that should be replaced by new path
    * @param {(request:ResolverRequest,alias:string)=>string | undefined | null | boolean} param0.dynamic a function whose result is an absolute path that alias points to
    * @param {RegExp} param0.pattern specify which files should be handled by this plugin
+   * @param {Array<string>} param0.extensions specify the extensions that we should try for modules that don't have file extensions
    */
-  constructor({ alias = ["@"], dynamic = () => null, pattern = /.*/ } = {}) {
+  constructor({ alias, dynamic, pattern, extensions } = {}) {
     if (typeof alias === "string") {
       alias = [alias];
     }
 
-    this.options = {
+    const defaultOptions = {
+      alias: ["@"],
+      dynamic: () => null,
+      pattern: /.*/,
+      extensions: ["js", "mjs", "ts", "jsx", "tsx"],
+    };
+
+    this.options = Object.assign({}, defaultOptions, {
       alias,
       dynamic,
       pattern,
-    };
+      extensions,
+    });
   }
 
   apply(resolver) {
-    const { alias, dynamic, pattern } = this.options;
+    const { alias, dynamic, pattern, extensions } = this.options;
 
     if (alias.length === 0) {
       return;
@@ -67,7 +76,16 @@ module.exports = class DynamicAliasResolvePlugin {
               continue;
             }
 
-            const newRequestPath = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
+            let newRequestPath = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
+            if (!hasExtension(newRequestPath)) {
+              const newRequestPathsWithExtension = getNewRequestPathsWithExtension(
+                newRequestPath,
+                extensions
+              );
+              newRequestPath = newRequestPathsWithExtension.find((filePath) =>
+                fs.existsSync(filePath)
+              );
+            }
 
             if (!fs.existsSync(newRequestPath)) {
               continue;
@@ -95,3 +113,13 @@ module.exports = class DynamicAliasResolvePlugin {
       });
   }
 };
+
+function hasExtension(filePath = "") {
+  // we don't care about the extension is valid or not, just a dot plus a word whose length is between 1 and 10.
+  const extensionPattern = /\.[a-z]{1,10}$/i;
+  return extensionPattern.test(filePath);
+}
+
+function getNewRequestPathsWithExtension(newRequestPath, extensions) {
+  return extensions.map((ext) => `${newRequestPath}.${ext}`);
+}
