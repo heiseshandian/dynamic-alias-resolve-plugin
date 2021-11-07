@@ -1,7 +1,7 @@
 {
   "name": "dynamic-alias-resolve-plugin",
-  "version": "1.1.0",
-  "description": "",
+  "version": "1.1.1",
+  "description": "dynamic alias resolve plugin",
   "main": "index.js",
   "repository": {
     "type": "git",
