@@ -95,7 +95,7 @@ module.exports = class DynamicAliasResolvePlugin {
               request: newRequestPath,
             });
             return resolver.doResolve(
-              "resolve",
+              resolver.getHook("resolve"),
               obj,
               `DynamicAliasResolvePlugin ${newRequestPath}`,
               resolveContext,
