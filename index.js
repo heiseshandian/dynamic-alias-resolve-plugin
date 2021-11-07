@@ -42,7 +42,7 @@ module.exports = class DynamicAliasResolvePlugin {
       extensions: ["js", "mjs", "ts", "jsx", "tsx"],
     };
 
-    this.options = Object.assign({}, defaultOptions, {
+    this.options = extend(defaultOptions, {
       alias,
       dynamic,
       pattern,
@@ -122,4 +122,14 @@ function hasExtension(filePath = "") {
 
 function getNewRequestPathsWithExtension(newRequestPath, extensions) {
   return extensions.map((ext) => `${newRequestPath}.${ext}`);
+}
+
+function extend(src, dest) {
+  return Object.keys(dest).reduce((src, curKey) => {
+    const val = dest[curKey];
+    if (val !== undefined) {
+      src[curKey] = val;
+    }
+    return src;
+  }, src);
 }
