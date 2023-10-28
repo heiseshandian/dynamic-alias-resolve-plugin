@@ -3,6 +3,10 @@ const path = require("path");
 
 module.exports = class DynamicAliasResolvePlugin {
   /**
+   * @typedef {import("enhanced-resolve/lib/Resolver")} Resolver
+   * */
+
+  /**
    *
    * @typedef {Object} DescriptionFileData
    * @property {any} concord
@@ -50,6 +54,11 @@ module.exports = class DynamicAliasResolvePlugin {
     });
   }
 
+  /**
+   *
+   * @param {Resolver} resolver
+   * @returns
+   */
   apply(resolver) {
     const { alias, dynamic, pattern, extensions } = this.options;
 
@@ -76,7 +85,7 @@ module.exports = class DynamicAliasResolvePlugin {
               continue;
             }
 
-            let newRequestPath = path.resolve(dynamicPath, innerRequest.substr(name.length + 1));
+            let newRequestPath = path.resolve(dynamicPath, innerRequest.substring(name.length + 1));
             if (!hasExtension(newRequestPath)) {
               const newRequestPathsWithExtension = getNewRequestPathsWithExtension(
                 newRequestPath,
@@ -95,7 +104,7 @@ module.exports = class DynamicAliasResolvePlugin {
               request: newRequestPath,
             });
             return resolver.doResolve(
-              resolver.getHook("resolve"),
+              resolver.ensureHook("resolved"),
               obj,
               `DynamicAliasResolvePlugin ${newRequestPath}`,
               resolveContext,
