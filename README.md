@@ -53,7 +53,6 @@ resolve: {
 |   alias    |                     Array\<string\>                     |               ['@']               |
 |  dynamic   | function(request,alias)=>string\|null\|false\|undefined |             ()=>null              |
 |  pattern   |                         RegExp                          |               /.\*/               |
-| extensions |                     Array\<string\>                     | ["js", "mjs", "ts", "jsx", "tsx"] |
 
 ## Description Of Options
 
@@ -68,7 +67,3 @@ return value should be `absolute path`,all false value('',false,null) will be ig
 ### pattern
 
 files needs handled by this plugin
-
-### extensions
-
-When we import a module we always ignore the extension, for instance, if we want to import something from `{path}/a.js` we just write `import {something} from {path}/a` instead of `import {something} from {path}/a.js`, which is convenient. However, when we resolve a module to an absolute path, we must have the file extension info. If you specified this option, we will try to match extensions that you specied when we encounter a module that don't have a file extension, or we will use the default extensions(["js", "mjs", "ts", "jsx", "tsx"]).

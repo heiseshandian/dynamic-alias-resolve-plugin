@@ -53,7 +53,6 @@ resolve: {
 |   alias    |                 string, Array\<string\>                 |               ['@']               |
 |  dynamic   | function(request,alias)=>string\|null\|false\|undefined |             ()=>null              |
 |  pattern   |                         RegExp                          |               /.\*/               |
-| extensions |                     Array\<string\>                     | ["js", "mjs", "ts", "jsx", "tsx"] |
 
 ## Options 说明
 
@@ -68,7 +67,3 @@ resolve: {
 ### pattern
 
 指定哪些文件需要经过本插件处理
-
-### extensions
-
-文件扩展名列表。当我们引入一个模块的时候通常我们会省略文件扩展名，比如说当我们想引入 `{path}/a.js` 时我们通常会写成 `import {something} from {path}/a` 而不是 `import {something} from {path}/a.js`，这写起来非常方便，但是当我们想把一个模块解析成一个绝对路径时我们通常需要提供扩展名信息。
